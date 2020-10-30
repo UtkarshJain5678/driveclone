@@ -85,41 +85,4 @@ const apiData = {
 // url : /7532
 // url : /7532/7532974
 // url : /7532
-const filterGetData = function (alteredData, match, x) {
-  for (let i = 0; i < alteredData.folderList.length; i++) {
-    if (alteredData.folderList[i].id === +match) {
-      return alteredData.folderList[i];
-    }
-  }
-  return null;
-};
-
-const getData = function (url) {
-  let returnedData = { ...apiData };
-  if (url === "/") {
-    return returnedData;
-  }
-  let getNestedIds = url.split("/").filter((item) => item);
-  for (let i = 0; i < getNestedIds.length; i++) {
-    returnedData = filterGetData(returnedData, getNestedIds[i]);
-    if (returnedData === null) {
-      return null;
-    }
-  }
-
-  return returnedData;
-};
-
-const addNewFolder = function (data, url) {
-  let returnedData = { ...apiData };
-  if (url === "/") {
-    returnedData.folderList.push({ ...data });
-  }
-  let getNestedIds = url.split("/").filter((item) => item);
-  for (let i = 0; i < getNestedIds.length; i++) {
-    returnedData = filterGetData(returnedData, getNestedIds[i]);
-  }
-  returnedData.folderList = [...returnedData.folderList, { ...data }];
-};
-
-export { apiData, getData, addNewFolder };
+export { apiData };

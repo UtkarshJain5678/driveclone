@@ -10,7 +10,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
-import { Folder, MoreVert } from "@material-ui/icons";
+import { Folder, MoreVert, Edit, Launch, Delete } from "@material-ui/icons";
 import DialogForRename from "./dialogForRename";
 import Alert from "@material-ui/lab/Alert";
 
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   folderStyle: {
     maxWidth: 300,
     width: 300,
-    padding: "0px 20px 0px 20px",
+    padding: "0px 10px 0px 10px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -151,9 +151,19 @@ function GetMenu(props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={() => navigateToFolder(id)}>Open</MenuItem>
-        <MenuItem onClick={handleClickDialogOpen}>Rename</MenuItem>
-        <MenuItem onClick={() => removeFolder(id, currentUrl)}>Delete</MenuItem>
+        <MenuItem onClick={() => navigateToFolder(id)}>
+          <Launch />
+          <Typography style={{ marginLeft: 5 }}>Open</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleClickDialogOpen}>
+          <Edit />
+          <Typography style={{ marginLeft: 5 }}>Rename</Typography>
+        </MenuItem>
+        <MenuItem onClick={() => removeFolder(id, currentUrl)}>
+          {" "}
+          <Delete />
+          <Typography style={{ marginLeft: 5 }}>Delete</Typography>
+        </MenuItem>
       </Menu>
       <DialogForRename
         status={dialogStatus}

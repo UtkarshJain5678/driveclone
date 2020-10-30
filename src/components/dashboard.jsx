@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Box, Fab, Menu, MenuItem } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { CreateNewFolder, AttachFile, Add } from "@material-ui/icons";
 
 import { FILE_CODE, FOLDER_CODE } from "./services/globalData";
 import FolderList from "./folderList";
@@ -185,7 +185,7 @@ export default function Dashboard(props) {
         aria-controls="simple-menu"
         aria-haspopup="true"
       >
-        <AddIcon />
+        <Add />
       </Fab>
       {/* open click fab below menu should open */}
       <Menu
@@ -195,8 +195,15 @@ export default function Dashboard(props) {
         open={Boolean(fabMenuStatus)}
         onClose={handleFabClose}
       >
-        <MenuItem onClick={handleNewFolderClick}>Add New Folder</MenuItem>
-        <MenuItem onClick={handleNewFileClick}>Add New File</MenuItem>
+        <MenuItem onClick={handleNewFolderClick}>
+          {" "}
+          <CreateNewFolder />
+          <Typography style={{ marginLeft: 5 }}>Add New Folder</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleNewFileClick}>
+          <AttachFile />
+          <Typography style={{ marginLeft: 5 }}>Add New File</Typography>
+        </MenuItem>
       </Menu>
 
       {/* open dialog according to user action on fab button*/}

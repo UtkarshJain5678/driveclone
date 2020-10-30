@@ -9,7 +9,7 @@ import {
   Menu,
   MenuItem,
 } from "@material-ui/core";
-import { Description, MoreVert } from "@material-ui/icons";
+import { Description, MoreVert, Edit, Delete } from "@material-ui/icons";
 import DialogForRename from "./dialogForRename";
 import Alert from "@material-ui/lab/Alert";
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   fileStyle: {
     maxWidth: 300,
     width: 300,
-    padding: "0px 20px 0px 20px",
+    padding: "0px 10px 0px 10px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -134,7 +134,8 @@ function GetMenu(props) {
             handleClose();
           }}
         >
-          Rename
+          <Edit />
+          <Typography style={{ marginLeft: 5 }}>Rename</Typography>
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -142,7 +143,8 @@ function GetMenu(props) {
             handleClose();
           }}
         >
-          Delete
+          <Delete />
+          <Typography style={{ marginLeft: 5 }}>Delete</Typography>
         </MenuItem>
       </Menu>
       <DialogForRename
