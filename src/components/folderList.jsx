@@ -11,6 +11,8 @@ import {
 } from "@material-ui/core";
 
 import { Folder, MoreVert } from "@material-ui/icons";
+import DialogForRename from "./dialogForRename";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   folderStyle: {
     maxWidth: 300,
     width: 300,
-    padding: "10px 20px 10px 20px",
+    padding: "5px 20px 5px 20px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -42,7 +44,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FolderList(props) {
-  const { list, navigateToFolder, currentUrl, removeFolder } = props;
+  const {
+    list,
+    navigateToFolder,
+    currentUrl,
+    removeFolder,
+    renameFolder,
+  } = props;
   const classes = useStyles();
 
   function Item(props) {
@@ -57,8 +65,17 @@ export default function FolderList(props) {
             <Box mr={3}>
               <Folder />
             </Box>
-            <Typography>{name}</Typography>
+            <Typography noWrap>
+              {name.length > 18 ? name.slice(0, 18) + ".." : name}
+            </Typography>
           </Box>
+          <GetMenu
+            id={id}
+            navigateToFolder={navigateToFolder}
+            removeFolder={removeFolder}
+            currentUrl={currentUrl}
+            renameFolder={renameFolder}
+          />
         </Paper>
       </>
     );
@@ -78,17 +95,11 @@ export default function FolderList(props) {
               className={classes.gridStyle}
             >
               <Item name={item.name} id={item.id} />
-              <GetMenu
-                id={item.id}
-                navigateToFolder={navigateToFolder}
-                removeFolder={removeFolder}
-                currentUrl={currentUrl}
-              />
             </Grid>
           ))
         ) : (
           <Grid item xs={12} sm={4} md={3}>
-            Empty List
+            <Alert severity="info">Empty Folder List!</Alert>
           </Grid>
         )}
       </Grid>
@@ -97,8 +108,22 @@ export default function FolderList(props) {
 }
 
 function GetMenu(props) {
-  const { id, currentUrl, navigateToFolder, removeFolder } = props;
+  const {
+    id,
+    currentUrl,
+    navigateToFolder,
+    removeFolder,
+    renameFolder,
+  } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [dialogStatus, setDialogStatus] = React.useState(false);
+  const handleClickDialogOpen = () => {
+    setDialogStatus(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogStatus(false);
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -124,9 +149,17 @@ function GetMenu(props) {
         onClose={handleClose}
       >
         <MenuItem onClick={() => navigateToFolder(id)}>Open</MenuItem>
-        <MenuItem onClick={handleClose}>Rename</MenuItem>
+        <MenuItem onClick={handleClickDialogOpen}>Rename</MenuItem>
         <MenuItem onClick={() => removeFolder(id, currentUrl)}>Delete</MenuItem>
       </Menu>
+      <DialogForRename
+        status={dialogStatus}
+        handleClose={handleDialogClose}
+        data={{ title: "Rename Folder", textFieldTitle: "New Name" }}
+        rename={renameFolder}
+        id={id}
+        currentUrl={currentUrl}
+      />
     </>
   );
 }

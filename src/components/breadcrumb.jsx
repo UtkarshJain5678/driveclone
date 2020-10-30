@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Breadcrumbs, Link, Typography } from "@material-ui/core";
 import { Home, Folder } from "@material-ui/icons";
 import { withRouter, useHistory } from "react-router-dom";
-import { getData } from "./../data/data.js";
 
 const useStyles = makeStyles((theme) => ({
   breadcrumbStyle: {
@@ -28,9 +27,14 @@ function Breadcrumb(props) {
 
   const {
     location: { pathname },
+    getData,
   } = props;
 
   const allPaths = pathname.split("/").filter((id) => id);
+
+  if (getData(pathname) === null) {
+    return null;
+  }
 
   return (
     <div className={classes.breadcrumbStyle}>

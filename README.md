@@ -4,9 +4,9 @@ Hosted Link Here: [Drive Clone](#).
 
 ## How to run locally
 
-Use command: `git clone https://github.com/pratik7368patil/driveclone.git`
-Change Directory: `cd driveclone`
-Install all dependencies: `npm i`
+Use command: `git clone https://github.com/pratik7368patil/driveclone.git` \
+Change Directory: `cd driveclone`\
+Install all dependencies: `npm i`\
 
 ### `npm start`
 

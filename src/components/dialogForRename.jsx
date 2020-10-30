@@ -6,29 +6,13 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-export default function DialogForm(props) {
-  const {
-    status,
-    handleClose,
-    data,
-    addNewFolder,
-    currentUrl,
-    addNewFile,
-  } = props;
+export default function DialogForRename(props) {
+  const { status, handleClose, data, rename, id, currentUrl } = props;
 
   const [name, setName] = React.useState("");
 
   const updateName = (event) => {
     setName(event.target.value);
-  };
-
-  const handleCreateClick = () => {
-    if (data.id === 10) {
-      addNewFolder(name, currentUrl);
-    } else {
-      addNewFile(name, currentUrl);
-    }
-    handleClose();
   };
   return (
     <div>
@@ -57,11 +41,13 @@ export default function DialogForm(props) {
           <Button
             variant="contained"
             elevation={0}
-            onClick={handleCreateClick}
+            onClick={() => {
+              rename(id, currentUrl, name);
+            }}
             color="primary"
             disableElevation
           >
-            Create
+            Update
           </Button>
         </DialogActions>
       </Dialog>

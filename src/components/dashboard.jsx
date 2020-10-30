@@ -6,6 +6,7 @@ import AddIcon from "@material-ui/icons/Add";
 import FolderList from "./folderList";
 import FileList from "./fileList";
 import DialogForm from "./dialogForm";
+import Error from "./error";
 
 import { useHistory } from "react-router-dom";
 
@@ -27,7 +28,15 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard(props) {
   const classes = useStyles();
 
-  const { addNewFolder, addNewFile, removeFile, removeFolder, getData } = props;
+  const {
+    addNewFolder,
+    addNewFile,
+    removeFile,
+    removeFolder,
+    getData,
+    renameFolder,
+    renameFile,
+  } = props;
   const mainData = getData(props.match.url);
 
   const history = useHistory();
@@ -35,6 +44,10 @@ export default function Dashboard(props) {
   const [fabMenuStatus, setfabMenuStatus] = React.useState(null);
   const [dialogData, setDialogData] = React.useState({});
   const [dialogStatus, setDialogStatus] = React.useState(false);
+
+  if (mainData === null) {
+    return <Error />;
+  }
 
   const handleFabOpen = (event) => {
     setfabMenuStatus(event.currentTarget);
@@ -94,6 +107,7 @@ export default function Dashboard(props) {
             navigateToFolder={navigateToFolder}
             currentUrl={props.match.url}
             removeFolder={removeFolder}
+            renameFolder={renameFolder}
           />
         </Box>
       </Box>
@@ -106,6 +120,7 @@ export default function Dashboard(props) {
             list={mainData.fileList}
             currentUrl={props.match.url}
             removeFile={removeFile}
+            renameFile={renameFile}
           />
         </Box>
       </Box>

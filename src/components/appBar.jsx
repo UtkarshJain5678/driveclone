@@ -7,7 +7,8 @@ import {
   IconButton,
   Box,
 } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+import ChangeHistoryIcon from "@material-ui/icons/ChangeHistory";
+import { withRouter, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,8 +16,9 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     background: "#ffff",
+    boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
   },
-  menuButton: {
+  iconButton: {
     marginRight: theme.spacing(2),
   },
   title: {
@@ -25,8 +27,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AppBar() {
+function AppBar() {
   const classes = useStyles();
+  const history = useHistory();
 
   return (
     <div className={classes.root}>
@@ -34,10 +37,11 @@ export default function AppBar() {
         <Toolbar>
           <IconButton
             edge="start"
-            className={classes.menuButton}
-            aria-label="menu"
+            className={classes.iconButton}
+            aria-label="icon"
+            onClick={() => history.push("/")}
           >
-            <MenuIcon />
+            <ChangeHistoryIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             <Box fontWeight="bold">Drive Clone</Box>
@@ -47,3 +51,5 @@ export default function AppBar() {
     </div>
   );
 }
+
+export default withRouter(AppBar);

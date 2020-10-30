@@ -10,6 +10,8 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import { Description, MoreVert } from "@material-ui/icons";
+import DialogForRename from "./dialogForRename";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   fileStyle: {
     maxWidth: 300,
     width: 300,
-    padding: "10px 20px 10px 20px",
+    padding: "5px 20px 5px 20px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -41,11 +43,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FileList(props) {
-  const { list, removeFile, currentUrl } = props;
+  const { list, removeFile, currentUrl, renameFile } = props;
   const classes = useStyles();
 
   function Item(props) {
-    const { name } = props;
+    const { id, name } = props;
     return (
       <Paper variant="outlined" className={classes.fileStyle}>
         <Box className={classes.fileDataStyle}>
@@ -54,6 +56,12 @@ export default function FileList(props) {
           </Box>
           <Typography noWrap>{name}</Typography>
         </Box>
+        <GetMenu
+          id={id}
+          removeFile={removeFile}
+          currentUrl={currentUrl}
+          renameFile={renameFile}
+        />
       </Paper>
     );
   }
@@ -72,16 +80,11 @@ export default function FileList(props) {
               className={classes.gridStyle}
             >
               <Item name={item.name} id={item.id} />
-              <GetMenu
-                id={item.id}
-                removeFile={removeFile}
-                currentUrl={currentUrl}
-              />
             </Grid>
           ))
         ) : (
           <Grid item xs={12} sm={4} md={3}>
-            Empty List
+            <Alert severity="info">Empty File List!</Alert>
           </Grid>
         )}
       </Grid>
@@ -90,8 +93,16 @@ export default function FileList(props) {
 }
 
 function GetMenu(props) {
-  const { id, currentUrl, removeFile } = props;
+  const { id, currentUrl, removeFile, renameFile } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [dialogStatus, setDialogStatus] = React.useState(false);
+  const handleClickDialogOpen = () => {
+    setDialogStatus(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogStatus(false);
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -116,9 +127,31 @@ function GetMenu(props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>Rename</MenuItem>
-        <MenuItem onClick={() => removeFile(id, currentUrl)}>Delete</MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClickDialogOpen();
+            handleClose();
+          }}
+        >
+          Rename
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            removeFile(id, currentUrl);
+            handleClose();
+          }}
+        >
+          Delete
+        </MenuItem>
       </Menu>
+      <DialogForRename
+        status={dialogStatus}
+        handleClose={handleDialogClose}
+        data={{ title: "Rename File", textFieldTitle: "New Name" }}
+        rename={renameFile}
+        id={id}
+        currentUrl={currentUrl}
+      />
     </>
   );
 }

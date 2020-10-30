@@ -1,5 +1,8 @@
 import React from "react";
 import { Divider } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import AppBar from "./components/appBar";
 import Dashboard from "./components/dashboard";
 import Breadcrumb from "./components/breadcrumb";
@@ -8,12 +11,30 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { apiData } from "./data/data.js";
 
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+  },
+}));
+
 function generateKey() {
   return Math.floor(Math.random() * 983175875);
 }
 
+// This is Main App function
+
 function App() {
+  const classes = useStyles();
   const [data, setData] = React.useState(apiData);
+
+  const [isLoading, setIsLoading] = React.useState(false);
+  const handleLoadingOn = () => {
+    setIsLoading(true);
+  };
+  const handleLoadingOff = () => {
+    setIsLoading(false);
+  };
 
   const filterFolderData = function (alteredData, match) {
     const filteredFolderList = alteredData.folderList.filter(
@@ -25,6 +46,7 @@ function App() {
   // below code is for folder addition
 
   const addNewFolder = (folderName, url) => {
+    handleLoadingOn();
     let returnedData = { ...data };
     const newFolder = {
       id: generateKey(),
@@ -40,16 +62,19 @@ function App() {
     for (let i = 0; i < getNestedIds.length; i++) {
       filteredData = filterFolderData(filteredData, getNestedIds[i]);
       if (filteredData === null) {
+        handleLoadingOff();
         return;
       }
     }
     filteredData.folderList = [...filteredData.folderList, newFolder];
     setData(returnedData);
+    handleLoadingOff();
   };
 
   // below code is for file addition
 
   const addNewFile = (fileName, url) => {
+    handleLoadingOn();
     let returnedData = { ...data };
     const newFile = {
       id: generateKey(),
@@ -64,16 +89,19 @@ function App() {
     for (let i = 0; i < getNestedIds.length; i++) {
       filteredData = filterFolderData(filteredData, getNestedIds[i]);
       if (filteredData === null) {
+        handleLoadingOff();
         return;
       }
     }
     filteredData.fileList = [...filteredData.fileList, newFile];
     setData(returnedData);
+    handleLoadingOff();
   };
 
   // remove file starts from here
 
   const removeFile = (id, url) => {
+    handleLoadingOn();
     let returnedData = { ...data };
     if (url === "/") {
       const filteredData = returnedData.fileList.filter(
@@ -81,6 +109,7 @@ function App() {
       );
       returnedData.fileList = [...filteredData];
       setData(returnedData);
+      handleLoadingOff();
       return;
     }
     let getNestedIds = url.split("/").filter((item) => item);
@@ -88,17 +117,20 @@ function App() {
     for (let i = 0; i < getNestedIds.length; i++) {
       filteredData = filterFolderData(filteredData, getNestedIds[i]);
       if (filteredData === null) {
+        handleLoadingOff();
         return;
       }
     }
     const newFileList = filteredData.fileList.filter((item) => item.id !== id);
     filteredData.fileList = [...newFileList];
     setData(returnedData);
+    handleLoadingOff();
   };
 
   // code for folder delete
 
   const removeFolder = (id, url) => {
+    handleLoadingOn();
     let returnedData = { ...data };
     if (url === "/") {
       const filteredData = returnedData.folderList.filter(
@@ -106,6 +138,7 @@ function App() {
       );
       returnedData.folderList = [...filteredData];
       setData(returnedData);
+      handleLoadingOff();
       return;
     }
     let getNestedIds = url.split("/").filter((item) => item);
@@ -113,6 +146,7 @@ function App() {
     for (let i = 0; i < getNestedIds.length; i++) {
       filteredData = filterFolderData(filteredData, getNestedIds[i]);
       if (filteredData === null) {
+        handleLoadingOff();
         return;
       }
     }
@@ -121,6 +155,88 @@ function App() {
     );
     filteredData.folderList = [...newFileList];
     setData(returnedData);
+    handleLoadingOff();
+  };
+
+  // code for rename folder
+
+  const renameFolder = (id, url, newName) => {
+    handleLoadingOn();
+    let returnedData = { ...data };
+    if (url === "/") {
+      const filteredData = returnedData.folderList.map((item) => {
+        if (item.id === id) {
+          const copyFolder = { ...item };
+          copyFolder.name = newName;
+          return copyFolder;
+        }
+        return item;
+      });
+      returnedData.folderList = [...filteredData];
+      setData(returnedData);
+      handleLoadingOff();
+      return;
+    }
+    let getNestedIds = url.split("/").filter((item) => item);
+    let filteredData = { ...returnedData };
+    for (let i = 0; i < getNestedIds.length; i++) {
+      filteredData = filterFolderData(filteredData, getNestedIds[i]);
+      console.log(filteredData);
+      if (filteredData === null) {
+        return;
+      }
+    }
+    const newFolderList = filteredData.folderList.map((item) => {
+      if (item.id === id) {
+        const copyFolder = { ...item };
+        copyFolder.name = newName;
+        return copyFolder;
+      }
+      return item;
+    });
+    filteredData.folderList = [...newFolderList];
+    setData(returnedData);
+    handleLoadingOff();
+  };
+
+  // code for rename file name
+
+  const renameFile = (id, url, newName) => {
+    handleLoadingOn();
+    let returnedData = { ...data };
+    if (url === "/") {
+      const filteredData = returnedData.fileList.map((item) => {
+        if (item.id === id) {
+          const copyFolder = { ...item };
+          copyFolder.name = newName;
+          return copyFolder;
+        }
+        return item;
+      });
+      returnedData.fileList = [...filteredData];
+      setData(returnedData);
+      handleLoadingOff();
+      return;
+    }
+    let getNestedIds = url.split("/").filter((item) => item);
+    let filteredData = { ...returnedData };
+    for (let i = 0; i < getNestedIds.length; i++) {
+      filteredData = filterFolderData(filteredData, getNestedIds[i]);
+      if (filteredData === null) {
+        return;
+      }
+    }
+    const newFileList = filteredData.fileList.map((item) => {
+      if (item.id === id) {
+        const copyFolder = { ...item };
+        copyFolder.name = newName;
+        return copyFolder;
+      }
+      return item;
+    });
+    filteredData.fileList = [...newFileList];
+    setData(returnedData);
+    handleLoadingOff();
   };
 
   // get data from above data which is in state
@@ -153,12 +269,13 @@ function App() {
   return (
     <Router>
       <AppBar />
-      <Breadcrumb />
+      <Breadcrumb getData={getData} />
       <Divider />
       <Switch>
+        <Route path="/404/error" exact component={Error} />
         <Route
           exact
-          path="/:id*"
+          path="/*"
           render={(props) => (
             <Dashboard
               {...props}
@@ -168,25 +285,15 @@ function App() {
               addNewFile={addNewFile}
               removeFile={removeFile}
               removeFolder={removeFolder}
+              renameFolder={renameFolder}
+              renameFile={renameFile}
             />
           )}
         />
-        <Route
-          path="/"
-          render={(props) => (
-            <Dashboard
-              {...props}
-              data={data}
-              getData={getData}
-              addNewFolder={addNewFolder}
-              addNewFile={addNewFile}
-              removeFile={removeFile}
-              removeFolder={removeFolder}
-            />
-          )}
-        />
-        <Route path="/error" render={(props) => <Error {...props} />} />
       </Switch>
+      <Backdrop className={classes.backdrop} open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Router>
   );
 }
