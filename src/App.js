@@ -6,7 +6,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import AppBar from "./components/appBar";
 import Dashboard from "./components/dashboard";
 import Breadcrumb from "./components/breadcrumb";
-import Error from "./components/error";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { apiData } from "./data/data.js";
@@ -18,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function generateKey() {
+function generateID() {
   return Math.floor(Math.random() * 983175875);
 }
 
@@ -49,7 +48,7 @@ function App() {
     handleLoadingOn();
     let returnedData = { ...data };
     const newFolder = {
-      id: generateKey(),
+      id: generateID(),
       name: folderName,
       folderList: [],
       fileList: [],
@@ -77,7 +76,7 @@ function App() {
     handleLoadingOn();
     let returnedData = { ...data };
     const newFile = {
-      id: generateKey(),
+      id: generateID(),
       name: fileName,
       path: "",
     };
@@ -164,6 +163,7 @@ function App() {
     handleLoadingOn();
     let returnedData = { ...data };
     if (url === "/") {
+      // this code can be reduced
       const filteredData = returnedData.folderList.map((item) => {
         if (item.id === id) {
           const copyFolder = { ...item };
@@ -205,6 +205,7 @@ function App() {
     handleLoadingOn();
     let returnedData = { ...data };
     if (url === "/") {
+      // this code can be reduced
       const filteredData = returnedData.fileList.map((item) => {
         if (item.id === id) {
           const copyFolder = { ...item };
@@ -272,7 +273,6 @@ function App() {
       <Breadcrumb getData={getData} />
       <Divider />
       <Switch>
-        <Route path="/404/error" exact component={Error} />
         <Route
           exact
           path="/*"

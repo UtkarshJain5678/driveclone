@@ -6,30 +6,60 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+import { FOLDER_CODE } from "./services/globalData";
+
 export default function DialogForm(props) {
   const {
     status,
     handleClose,
-    data,
+    dialogData,
+    handleAddNewFolder,
+    handleAddNewFile,
+    addNewFile,
     addNewFolder,
     currentUrl,
-    addNewFile,
   } = props;
 
   const [name, setName] = React.useState("");
+  const [isNameValid, setIsNameValid] = React.useState(true);
 
-  const updateName = (event) => {
+  function updateName(event) {
     setName(event.target.value);
-  };
-
-  const handleCreateClick = () => {
-    if (data.id === 10) {
-      addNewFolder(name, currentUrl);
+    if (dialogData.id === FOLDER_CODE) {
+      updateFolderList(event.target.value);
     } else {
-      addNewFile(name, currentUrl);
+      updateFileList(event.target.value);
     }
-    handleClose();
-  };
+  }
+
+  function updateFolderList(checkName) {
+    setIsNameValid(handleAddNewFolder(checkName));
+  }
+
+  function updateFileList(checkName) {
+    setIsNameValid(handleAddNewFile(checkName));
+  }
+
+  function handleAddNameBtnClick() {
+    if (isNameValid) {
+      if (dialogData.id === FOLDER_CODE) {
+        if (name === "") {
+          updateFolderList("");
+        } else {
+          addNewFolder(name, currentUrl);
+          handleClose();
+        }
+      } else {
+        if (name === "") {
+          updateFileList("");
+        } else {
+          addNewFile(name, currentUrl);
+          handleClose();
+        }
+      }
+    }
+  }
+
   return (
     <div>
       <Dialog
@@ -37,15 +67,17 @@ export default function DialogForm(props) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">{data.title}</DialogTitle>
+        <DialogTitle id="form-dialog-title">{dialogData.title}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            id={data.textFieldTitle}
-            label={data.textFieldTitle}
+            error={!isNameValid}
+            helperText={!isNameValid ? "Invalid Name!" : ""}
+            id={dialogData.textFieldTitle}
+            label={dialogData.textFieldTitle}
             type="text"
-            onChange={updateName}
+            onChange={(event) => updateName(event)}
             autoComplete="off"
             fullWidth
           />
@@ -57,8 +89,8 @@ export default function DialogForm(props) {
           <Button
             variant="contained"
             elevation={0}
-            onClick={handleCreateClick}
             color="primary"
+            onClick={handleAddNameBtnClick}
             disableElevation
           >
             Create

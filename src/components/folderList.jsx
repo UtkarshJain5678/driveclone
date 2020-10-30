@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   folderStyle: {
     maxWidth: 300,
     width: 300,
-    padding: "5px 20px 5px 20px",
+    padding: "0px 20px 0px 20px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -50,6 +50,7 @@ export default function FolderList(props) {
     currentUrl,
     removeFolder,
     renameFolder,
+    handleAddNewFolder,
   } = props;
   const classes = useStyles();
 
@@ -63,7 +64,7 @@ export default function FolderList(props) {
             onClick={() => navigateToFolder(id)}
           >
             <Box mr={3}>
-              <Folder />
+              <Folder color="inherit" />
             </Box>
             <Typography noWrap>
               {name.length > 18 ? name.slice(0, 18) + ".." : name}
@@ -75,6 +76,7 @@ export default function FolderList(props) {
             removeFolder={removeFolder}
             currentUrl={currentUrl}
             renameFolder={renameFolder}
+            handleAddNewFolder={handleAddNewFolder}
           />
         </Paper>
       </>
@@ -114,6 +116,7 @@ function GetMenu(props) {
     navigateToFolder,
     removeFolder,
     renameFolder,
+    handleAddNewFolder,
   } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [dialogStatus, setDialogStatus] = React.useState(false);
@@ -155,6 +158,7 @@ function GetMenu(props) {
       <DialogForRename
         status={dialogStatus}
         handleClose={handleDialogClose}
+        handleAddNew={handleAddNewFolder}
         data={{ title: "Rename Folder", textFieldTitle: "New Name" }}
         rename={renameFolder}
         id={id}

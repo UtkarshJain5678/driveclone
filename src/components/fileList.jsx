@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   fileStyle: {
     maxWidth: 300,
     width: 300,
-    padding: "5px 20px 5px 20px",
+    padding: "0px 20px 0px 20px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FileList(props) {
-  const { list, removeFile, currentUrl, renameFile } = props;
+  const { list, removeFile, currentUrl, renameFile, handleAddNewFile } = props;
   const classes = useStyles();
 
   function Item(props) {
@@ -52,12 +52,13 @@ export default function FileList(props) {
       <Paper variant="outlined" className={classes.fileStyle}>
         <Box className={classes.fileDataStyle}>
           <Box mr={3}>
-            <Description />
+            <Description color="primary" />
           </Box>
           <Typography noWrap>{name}</Typography>
         </Box>
         <GetMenu
           id={id}
+          handleAddNewFile={handleAddNewFile}
           removeFile={removeFile}
           currentUrl={currentUrl}
           renameFile={renameFile}
@@ -93,7 +94,7 @@ export default function FileList(props) {
 }
 
 function GetMenu(props) {
-  const { id, currentUrl, removeFile, renameFile } = props;
+  const { id, currentUrl, removeFile, renameFile, handleAddNewFile } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [dialogStatus, setDialogStatus] = React.useState(false);
   const handleClickDialogOpen = () => {
@@ -118,7 +119,7 @@ function GetMenu(props) {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <MoreVert />
+        <MoreVert color="inherit" />
       </IconButton>
       <Menu
         id={`file-menu-${id}`}
@@ -147,6 +148,7 @@ function GetMenu(props) {
       <DialogForRename
         status={dialogStatus}
         handleClose={handleDialogClose}
+        handleAddNew={handleAddNewFile}
         data={{ title: "Rename File", textFieldTitle: "New Name" }}
         rename={renameFile}
         id={id}

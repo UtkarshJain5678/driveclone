@@ -7,13 +7,35 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 export default function DialogForRename(props) {
-  const { status, handleClose, data, rename, id, currentUrl } = props;
+  const {
+    status,
+    handleClose,
+    data,
+    rename,
+    id,
+    currentUrl,
+    handleAddNew,
+  } = props;
 
   const [name, setName] = React.useState("");
 
-  const updateName = (event) => {
+  const [isNameValid, setIsNameValid] = React.useState("");
+
+  function updateName(event) {
     setName(event.target.value);
-  };
+    updateFileList(event.target.value);
+  }
+
+  function updateFileList(checkName) {
+    setIsNameValid(handleAddNew(checkName));
+  }
+
+  function handleClickUpdateBtn() {
+    if (isNameValid) {
+      rename(id, currentUrl, name);
+      setName("");
+    }
+  }
   return (
     <div>
       <Dialog
@@ -26,9 +48,11 @@ export default function DialogForRename(props) {
           <TextField
             autoFocus
             margin="dense"
+            error={!isNameValid}
             id={data.textFieldTitle}
             label={data.textFieldTitle}
             type="text"
+            helperText={!isNameValid ? "Invalid Name!" : ""}
             onChange={updateName}
             autoComplete="off"
             fullWidth
@@ -41,9 +65,7 @@ export default function DialogForRename(props) {
           <Button
             variant="contained"
             elevation={0}
-            onClick={() => {
-              rename(id, currentUrl, name);
-            }}
+            onClick={handleClickUpdateBtn}
             color="primary"
             disableElevation
           >

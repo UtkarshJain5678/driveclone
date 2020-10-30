@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Box, Fab, Menu, MenuItem } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
+import { FILE_CODE, FOLDER_CODE } from "./services/globalData";
 import FolderList from "./folderList";
 import FileList from "./fileList";
 import DialogForm from "./dialogForm";
@@ -49,6 +50,8 @@ export default function Dashboard(props) {
     return <Error />;
   }
 
+  // fab button action
+
   const handleFabOpen = (event) => {
     setfabMenuStatus(event.currentTarget);
   };
@@ -57,27 +60,7 @@ export default function Dashboard(props) {
     setfabMenuStatus(null);
   };
 
-  const handleNewFolderClick = () => {
-    handleFabClose();
-    handleClickDialogOpen();
-    const newDialogData = {
-      id: 10,
-      title: "New Folder Name",
-      textFieldTitle: "Name",
-    };
-    setDialogData(newDialogData);
-  };
-
-  const handleNewFileClick = () => {
-    handleFabClose();
-    handleClickDialogOpen();
-    const newDialogData = {
-      id: 20,
-      title: "New File Name",
-      textFieldTitle: "Name",
-    };
-    setDialogData(newDialogData);
-  };
+  // input dialog action
 
   const handleClickDialogOpen = () => {
     setDialogStatus(true);
@@ -95,10 +78,78 @@ export default function Dashboard(props) {
     }
   }
 
+  // code to handle which dialog should get open
+
+  const handleNewFolderClick = () => {
+    handleFabClose();
+    handleClickDialogOpen();
+    const newDialogData = {
+      id: FOLDER_CODE,
+      title: "New Folder Name",
+      textFieldTitle: "Name",
+    };
+    setDialogData(newDialogData);
+  };
+
+  const handleNewFileClick = () => {
+    handleFabClose();
+    handleClickDialogOpen();
+    const newDialogData = {
+      id: FILE_CODE,
+      title: "New File Name",
+      textFieldTitle: "Name",
+    };
+    setDialogData(newDialogData);
+  };
+
+  // code to check duplication in folderlist and file list
+
+  const checkDuplicateFolderName = (name) => {
+    if (
+      mainData.folderList.filter(
+        (item) => item.name.toLowerCase() === name.toLowerCase()
+      ).length > 0
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const checkDuplicateFileName = (name) => {
+    if (
+      mainData.fileList.filter(
+        (item) => item.nametoLowerCase() === name.toLowerCase()
+      ).length > 0
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleAddNewFolder = (name) => {
+    if (name === "") {
+      return false;
+    }
+    if (checkDuplicateFolderName(name)) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleAddNewFile = (name) => {
+    if (name === "") {
+      return false;
+    }
+    if (checkDuplicateFileName(name)) {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <div className={classes.dashboardMainStyle}>
       <Box mb={4}>
-        <Typography component="h4" variant="h4">
+        <Typography component="h6" variant="h6">
           <Box fontWeight="bold">Folders</Box>
         </Typography>
         <Box mt={3}>
@@ -108,11 +159,12 @@ export default function Dashboard(props) {
             currentUrl={props.match.url}
             removeFolder={removeFolder}
             renameFolder={renameFolder}
+            handleAddNewFolder={handleAddNewFolder}
           />
         </Box>
       </Box>
       <Box mb={4}>
-        <Typography component="h4" variant="h4">
+        <Typography component="h6" variant="h6">
           <Box fontWeight="bold">Files</Box>
         </Typography>
         <Box mt={3}>
@@ -121,6 +173,7 @@ export default function Dashboard(props) {
             currentUrl={props.match.url}
             removeFile={removeFile}
             renameFile={renameFile}
+            handleAddNewFile={handleAddNewFile}
           />
         </Box>
       </Box>
@@ -149,11 +202,14 @@ export default function Dashboard(props) {
       {/* open dialog according to user action on fab button*/}
       <DialogForm
         status={dialogStatus}
+        mainData={mainData}
         handleClose={handleDialogClose}
+        handleAddNewFolder={handleAddNewFolder}
+        handleAddNewFile={handleAddNewFile}
         addNewFolder={addNewFolder}
         addNewFile={addNewFile}
         currentUrl={props.match.url}
-        data={dialogData}
+        dialogData={dialogData}
       />
     </div>
   );
