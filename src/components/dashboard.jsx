@@ -118,7 +118,7 @@ export default function Dashboard(props) {
   const checkDuplicateFileName = (name) => {
     if (
       mainData.fileList.filter(
-        (item) => item.nametoLowerCase() === name.toLowerCase()
+        (item) => item.name.toLowerCase() === name.toLowerCase()
       ).length > 0
     ) {
       return true;
@@ -127,7 +127,7 @@ export default function Dashboard(props) {
   };
 
   const handleAddNewFolder = (name) => {
-    if (name === "") {
+    if (name.trim() === "") {
       return false;
     }
     if (checkDuplicateFolderName(name)) {
@@ -137,7 +137,7 @@ export default function Dashboard(props) {
   };
 
   const handleAddNewFile = (name) => {
-    if (name === "") {
+    if (name.trim() === "") {
       return false;
     }
     if (checkDuplicateFileName(name)) {
